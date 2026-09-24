@@ -15,22 +15,22 @@ const TEMPLATES = [
 
 const PLANS = [
   {
-    id: 'standard', name: 'Standard', price: 'R349.99',
+    id: 'basic', name: 'Basic', price: 'R50',
     desc: 'Everything you need to get started',
     features: ['3 CV documents', '2 templates (Minimal + Executive)', 'PDF export (no watermark)', 'ATS score checker', 'Job board access', 'Email support'],
-    cta: 'Get Standard', highlight: false,
+    cta: 'Get Basic', highlight: false,
   },
   {
-    id: 'premium', name: 'Premium', price: 'R599.99',
+    id: 'standard', name: 'Standard', price: 'R150',
     desc: 'For serious job seekers',
     features: ['Unlimited CVs', 'All 6 premium templates', 'Cover letter builder', 'Version history', 'Interview prep (all questions)', 'AI writing assistant', 'Priority email support'],
-    cta: 'Get Premium', highlight: true,
+    cta: 'Get Standard', highlight: true,
   },
   {
-    id: 'platinum', name: 'Platinum', price: 'R849.99',
+    id: 'premium', name: 'Premium', price: 'R250',
     desc: 'For career professionals',
-    features: ['Everything in Premium', 'LinkedIn profile import', 'Custom shareable CV link', 'Voice interview coaching', 'Dedicated career advisor', '1-on-1 CV review session', 'Priority phone support'],
-    cta: 'Get Platinum', highlight: false,
+    features: ['Everything in Standard', 'LinkedIn profile import', 'Custom shareable CV link', 'Voice interview coaching', 'Dedicated career advisor', '1-on-1 CV review session', 'Priority phone support'],
+    cta: 'Get Premium', highlight: false,
   },
 ];
 
@@ -423,7 +423,7 @@ function renderAuth() {
     { icon: '◈', title: 'Professional CV Builder', desc: 'Create stunning, ATS-optimised CVs in minutes with our expert templates.' },
     { icon: '⬡', title: 'Live Job Board', desc: 'Browse curated job listings matched to your skills and experience.' },
     { icon: '◇', title: 'Voice Interview Prep', desc: 'Practice with Morgan, your AI coach, using real voice conversations.' },
-    { icon: '◎', title: 'Plans from R349.99/yr', desc: 'Affordable annual plans — Standard, Premium, and Platinum — billed in Rands.' },
+    { icon: '◎', title: 'Plans from R50/yr', desc: 'Affordable annual plans — Standard, Premium, and Platinum — billed in Rands.' },
   ];
   const trust = [['12k+', 'CVs created'], ['94%', 'Interview rate'], ['4.9★', 'User rating']];
 
@@ -490,7 +490,7 @@ function renderAuth() {
       <div style="margin-top:36px;background:#111113;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:16px 18px;">
         <div style="font-size:11px;font-family:'DM Mono';color:#71717a;margin-bottom:10px;letter-spacing:0.06em;text-transform:uppercase;">Annual plans</div>
         <div style="display:flex;justify-content:space-between;">
-          ${[['Standard', 'R349.99'], ['Premium', 'R599.99'], ['Platinum', 'R849.99']].map(([plan, price]) => `
+          ${[['Standard', 'R50'], ['Premium', 'R150'], ['Platinum', 'R250']].map(([plan, price]) => `
             <div style="text-align:center;">
               <div style="font-size:13px;font-weight:600;color:${plan === 'Premium' ? '#d4f84b' : '#a1a1aa'};margin-bottom:2px;">${plan}</div>
               <div style="font-size:12px;font-family:'DM Mono';color:${plan === 'Premium' ? '#d4f84b' : '#52525b'};">${price}</div>
@@ -585,7 +585,7 @@ function renderPricing() {
           </div>`).join('')}
         <div style="display:grid;grid-template-columns:1fr repeat(3, 120px);padding:16px 28px;border-top:1px solid rgba(255,255,255,0.08);background:rgba(212,248,75,0.03);">
           <span style="font-size:13px;font-weight:600;color:#f4f4f5;">Annual price</span>
-          ${['R349.99', 'R599.99', 'R849.99'].map((p, j) => `<span style="font-size:14px;font-weight:700;text-align:center;color:${j === 1 ? '#d4f84b' : '#f4f4f5'};font-family:'DM Mono';">${p}</span>`).join('')}
+          ${['R50', 'R150', 'R250'].map((p, j) => `<span style="font-size:14px;font-weight:700;text-align:center;color:${j === 1 ? '#d4f84b' : '#f4f4f5'};font-family:'DM Mono';">${p}</span>`).join('')}
         </div>
       </div>
 
@@ -1554,8 +1554,9 @@ function initApp() {
     const el = e.target;
     if (!el.dataset || !el.dataset.model) return;
     setDeep(state, el.dataset.model, el.value);
-    // Live-update dependent views (e.g. CV preview) without losing focus/cursor
-    rerenderPreserveFocus();
+    // Do not re-render the entire page on every keystroke. Replacing the input
+    // element causes the browser to reset/reposition the caret while typing.
+    // State is updated immediately, and the preview will refresh on other UI actions.
   });
 
   root.addEventListener('change', (e) => {
